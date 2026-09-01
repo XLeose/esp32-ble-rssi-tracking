@@ -1,0 +1,60 @@
+version: '3.8'
+
+services:
+  # Eclipse Mosquitto MQTT Broker
+  mosquitto:
+    image: eclipse-mosquitto:latest
+    container_name: mosquitto
+    restart: unless-stopped
+    ports:
+      - "1883:1883"
+      - "9001:9001"
+    volumes:
+      - ./mosquitto/config/mosquitto.conf:/mosquitto/config/mosquitto.conf:ro
+      - ./mosquitto/config/passwd:/mosquitto/config/passwd:ro
+      - ./mosquitto/data:/mosquitto/data
+      - ./mosquitto/log:/mosquitto/log
+    networks:
+      - iot-network
+
+  # Python Decision Engine Backend Service
+  python_backend:
+    build:
+      context: ./python_backend
+      dockerfile: Dockerfile
+    container_name: iot_decision_engine
+    restart: unless-stopped
+    depends_on:
+      - mosquitto
+    environment:
+      - MQTT_BROKER_IP=mosquitto
+      - MQTT_BROKER_PORT=1883
+      - MQTT_USERNAME=${MQTT_USERNAME:-YOUR_MQTT_USERNAME}
+      - MQTT_PASSWORD=${MQTT_PASSWORD:-YOUR_MQTT_PASSWORD}
+      - MQTT_LISTEN_TOPIC=arge/test_device
+      - MQTT_PUBLISH_TOPIC=arge/decision
+      - MQTT_CLIENT_ID=Backend_Decision_Motor
+      - DECISION_INTERVAL_SEC=3.0
+    networks:
+      - iot-network
+
+  # Portainer Docker Management UI
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - iot-network
+
+networks:
+  iot-network:
+    driver: bridge
+
+volumes:
+  portainer_data:

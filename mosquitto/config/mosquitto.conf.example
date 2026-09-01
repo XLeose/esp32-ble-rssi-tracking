@@ -1,0 +1,15 @@
+# Mosquitto MQTT Broker Configuration
+# Port and Interface Binding
+listener 1883 0.0.0.0
+
+# Authentication and Access Control
+allow_anonymous false
+password_file /mosquitto/config/passwd
+
+# Persistence Storage
+persistence true
+persistence_location /mosquitto/data/
+
+# Logging
+log_dest file /mosquitto/log/mosquitto.log
+log_dest stdout

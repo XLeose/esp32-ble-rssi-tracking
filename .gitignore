@@ -1,0 +1,41 @@
+# Build directories and binaries
+build/
+**/build/
+*.bin
+*.elf
+*.map
+
+# Python virtual environments & bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+venv/
+.venv/
+ENV/
+
+# Secrets and environment files
+.env
+.env.local
+**/credentials.h
+mosquitto/config/passwd
+mosquitto/data/
+mosquitto/log/
+
+# ESP-IDF specific
+sdkconfig
+sdkconfig.old
+**/sdkconfig
+**/sdkconfig.old
+managed_components/
+**/managed_components/
+dependencies.lock
+**/dependencies.lock
+
+# IDE & OS files
+.vscode/
+**/.vscode/
+.DS_Store
+**/.DS_Store
